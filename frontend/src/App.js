@@ -1,29 +1,55 @@
-import logo from './logo.svg';
 import './App.css';
-import React, { useEffect, useState } from 'react';
+
+function Register() {
+    return (
+        <div className='register'>
+            <h2 className='register-header'>Register</h2>
+            <form className='register-container'>
+                <p>
+                    <input type='text' placeholder='email' />
+                </p>
+                <p>
+                    <input type='text' placeholder='Username' />
+                </p>
+                <p>
+                    <input type='password' placeholder='Password' />
+                </p>
+                <p>
+                    <input type='password' placeholder='Confirm Password' />
+                </p>
+                <p>
+                    <input type='submit' value='Register' />
+                </p>
+            </form>
+        </div>
+    );
+}
+
+function Login() {
+    return (
+        <div className='login'>
+            <h2 className='login-header'>Login</h2>
+            <form className='login-container'>
+                <p>
+                    <input type='text' placeholder='email' />
+                </p>
+                <p>
+                    <input type='password' placeholder='Password' />
+                </p>
+                <p>
+                    <input type='submit' value='Login' />
+                </p>
+            </form>
+        </div>
+    );
+}
 
 function App() {
-    const [message, setMessage] = useState('');
-    useEffect(() => {
-        fetch('http://localhost:8080/')
-            .then(response => response.text())
-            .then(data => setMessage(data));
-    }, []);
     return (
-        <div className="App">
-            <header className="App-header">
-                <img src={logo} className="App-logo" alt="logo" />
-                <p>{message}</p>
-                <a
-                    className="App-link"
-                    href="https://reactjs.org"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
-                    Learn React
-                </a>
-            </header>
-        </div>
+        <>
+            {Register()}
+            {Login()}
+        </>
     );
 }
 
