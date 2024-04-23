@@ -6,6 +6,8 @@ services:
       - 8080:8080
     volumes:
       - ./backend:/usr/src/app
+    environment:
+      - DATABASE_URL=postgresql://localhost/mydatabase
     command: npm start
   frontend:
     build: ./frontend
