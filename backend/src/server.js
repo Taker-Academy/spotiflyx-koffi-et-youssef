@@ -31,7 +31,7 @@ const User = sequelize.define('User', {
     }
 });
 
-router.post('/auth/register', async (req, res) => {
+app.post('/auth/register', async (req, res) => {
     const { email, password, firstName, lastName } = req.body;
 
     if (!email || !password || !firstName || !lastName) {
@@ -80,7 +80,7 @@ router.post('/auth/register', async (req, res) => {
     }
 });
 
-router.post('/auth/login', async (req, res) => {
+app.post('/auth/login', async (req, res) => {
     const { email, password } = req.body;
 
     if (!email || !password) {
