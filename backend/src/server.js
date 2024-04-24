@@ -6,6 +6,7 @@ const { Sequelize, DataTypes } = require('sequelize');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
+app.use(express.json());
 app.use(cors());
 
 app.get('/', (req, res) => {
