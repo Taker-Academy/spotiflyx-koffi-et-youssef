@@ -41,6 +41,7 @@ User.sync({ force: false })
     });
 
 app.post('/auth/register', async (req, res) => {
+    console.log(req.body);
     const { email, password, firstName, lastName } = req.body;
 
     if (!email || !password || !firstName || !lastName) {
@@ -124,6 +125,55 @@ app.post('/auth/login', async (req, res) => {
                 },
             },
             message: 'Connexion réussie.'
+        });
+    } catch (error) {
+        res.status(500).json({ ok: false, error: 'Erreur interne du serveur.' });
+    }
+});
+
+app.post('/auth/modifypassword', async (req, res) => {
+    if (!req.headers.authorization) {
+        return res.status(401).json({ ok: false, message: 'Mauvais token JWT.' });
+    }
+    const token = req.headers.authorization.split(' ')[1];
+    const { password, newPassword } = req.body;
+
+    try {
+        decoded = jwt.verify(token, process.env.JWT_SECRET);
+    } catch (err) {
+        return res.status(401).json({ ok: false, message: 'Mauvais token JWT.' });
+    }
+
+    if (!password || !newPassword) {
+        return res.status(400).json({ ok: false, error: 'Mauvaise requête, paramètres manquants ou invalides.' });
+    }
+
+    const existingUser = await User.findOne({ where: { email } });
+    if (existingUser && (await bcrypt.compare(password, existingUser.password))) {
+        password = newPassword;
+    } else {
+        return res.status(401).json({ ok: false, error: 'Mauvais identifiants.', });
+    }
+
+    try {
+        const token = jwt.sign({ id: existingUser._id }, process.env.JWT_SECRET, {
+            expiresIn: '24h',
+        });
+
+        res.setHeader('Access-Control-Allow-Origin', '*');
+        res.setHeader('Authorization', 'Bearer ' + token);
+
+        res.status(200).json({
+            ok: true,
+            data: {
+                token,
+                user: {
+                    email,
+                    firstName,
+                    lastName,
+                },
+            },
+            message: 'Mot de passe modifié avec succès.'
         });
     } catch (error) {
         res.status(500).json({ ok: false, error: 'Erreur interne du serveur.' });
