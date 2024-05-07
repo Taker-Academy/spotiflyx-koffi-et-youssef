@@ -32,6 +32,14 @@ const User = sequelize.define('User', {
     }
 });
 
+User.sync({ force: false })
+    .then(() => {
+        console.log('Users table created.');
+    })
+    .catch(error => {
+        console.error('Failed to create Users table:', error);
+    });
+
 app.post('/auth/register', async (req, res) => {
     const { email, password, firstName, lastName } = req.body;
 
@@ -77,6 +85,7 @@ app.post('/auth/register', async (req, res) => {
             },
         });
     } catch (error) {
+        console.error('Failed to create user:', error);
         res.status(500).json({ ok: false, error: 'Erreur interne du serveur.' });
     }
 });

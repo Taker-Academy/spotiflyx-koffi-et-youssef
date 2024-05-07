@@ -1,14 +1,25 @@
 version: '3'
 services:
   backend:
+    depends_on:
+      - database
     build: ./backend
     ports:
       - 8080:8080
-    environment:
-      - DATABASE_URL=postgresql://localhost/mydatabase
     command: npm start
+    environment:
+      - DATABASE_URL=postgres://postgres:password@database:5432/spotiflix
+      - JWT_SECRET=${JWT_SECRET}
   frontend:
     build: ./frontend
     ports:
       - 3000:3000
     command: npm start
+  database:
+    image: postgres
+    ports:
+      - 5433:5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=spotiflix
