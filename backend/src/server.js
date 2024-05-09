@@ -9,10 +9,6 @@ const jwt = require('jsonwebtoken');
 app.use(express.json());
 app.use(cors());
 
-app.get('/', (req, res) => {
-    res.send('Hello World!');
-});
-
 const sequelize = new Sequelize(process.env.DATABASE_URL, {
     dialect: 'postgres',
     protocol: 'postgres',
@@ -65,7 +61,7 @@ app.post('/auth/register', async (req, res) => {
 
     try {
         await user.save();
-        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+        const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
             expiresIn: '24h',
         });
 
@@ -106,7 +102,7 @@ app.post('/auth/login', async (req, res) => {
     }
 
     try {
-        const token = jwt.sign({ id: existingUser._id }, process.env.JWT_SECRET, {
+        const token = jwt.sign({ id: existingUser.id }, process.env.JWT_SECRET, {
             expiresIn: '24h',
         });
 
@@ -146,16 +142,22 @@ app.post('/auth/modifypassword', async (req, res) => {
     if (!password || !newPassword) {
         return res.status(400).json({ ok: false, error: 'Mauvaise requête, paramètres manquants ou invalides.' });
     }
-
-    const existingUser = await User.findOne({ where: { email } });
-    if (existingUser && (await bcrypt.compare(password, existingUser.password))) {
-        password = newPassword;
+    let id = decoded.id;
+    const user = await User.findOne({ where: { id } });
+    if (user && (await bcrypt.compare(password, user.password))) {
+        firstName = user.firstName;
+        lastName = user.lastName;
+        email = user.email;
     } else {
         return res.status(401).json({ ok: false, error: 'Mauvais identifiants.', });
     }
 
+    let cryptNewPassword = await bcrypt.hash(newPassword, 10);
+
     try {
-        const token = jwt.sign({ id: existingUser._id }, process.env.JWT_SECRET, {
+        await user.update({ password: cryptNewPassword });
+        console.log(user);
+        const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
             expiresIn: '24h',
         });
 
@@ -176,6 +178,7 @@ app.post('/auth/modifypassword', async (req, res) => {
         });
     } catch (error) {
         res.status(500).json({ ok: false, error: 'Erreur interne du serveur.' });
+        console.error('Failed to update password:', error);
     }
 });
 

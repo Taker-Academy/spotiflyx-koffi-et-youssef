@@ -21,8 +21,8 @@ function Register() {
         const postData = { email, password, firstName, lastName };
         const response = await api.post('/auth/register', postData);
         if (response.data.ok === true) {
-            localStorage.setItem('token', response.data.token);
-            console.log('User created successfully');
+            localStorage.setItem('token', response.data.data.token);
+            console.log(response.data.message);
         } else {
             console.error(response.data.error);
         }
@@ -66,6 +66,7 @@ function Login() {
 
         if (response.data.ok) {
             localStorage.setItem('token', response.data.data.token);
+            console.log(response.data.message);
         } else {
             console.error(response.data.error);
         }
@@ -92,6 +93,7 @@ function Login() {
 function Logout() {
     const handleLogout = () => {
         localStorage.removeItem('token');
+        console.log('Logged out');
     };
 
     return (
@@ -115,6 +117,7 @@ function ModifyPassword() {
 
         if (response.data.ok) {
             localStorage.setItem('token', response.data.data.token);
+            console.log(response.data.message);
         } else {
             console.error(response.data.error);
         }
