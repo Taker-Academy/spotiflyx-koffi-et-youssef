@@ -65,7 +65,6 @@ app.post('/auth/register', async (req, res) => {
 
     try {
         await user.save();
-
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
             expiresIn: '24h',
         });

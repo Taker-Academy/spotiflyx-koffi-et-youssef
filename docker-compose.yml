@@ -7,6 +7,8 @@ services:
     ports:
       - 8080:8080
     command: npm start
+    volumes:
+      - ./backend/src:/usr/src/app/src
     environment:
       - DATABASE_URL=postgres://postgres:password@database:5432/spotiflix
       - JWT_SECRET=${JWT_SECRET}
@@ -15,6 +17,8 @@ services:
     ports:
       - 3000:3000
     command: npm start
+    volumes:
+      - ./frontend/src:/usr/src/app/src
   database:
     image: postgres
     ports:

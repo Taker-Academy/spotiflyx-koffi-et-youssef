@@ -19,10 +19,10 @@ function Register() {
             return;
         }
         const postData = { email, password, firstName, lastName };
-        console.log(postData);
         const response = await api.post('/auth/register', postData);
-        if (response.data.ok) {
-            localStorage.setItem('token', response.data.data.token);
+        if (response.data.ok === true) {
+            localStorage.setItem('token', response.data.token);
+            console.log('User created successfully');
         } else {
             console.error(response.data.error);
         }
