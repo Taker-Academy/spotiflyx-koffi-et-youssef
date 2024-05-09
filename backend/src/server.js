@@ -37,7 +37,6 @@ User.sync({ force: false })
     });
 
 app.post('/auth/register', async (req, res) => {
-    console.log(req.body);
     const { email, password, firstName, lastName } = req.body;
 
     if (!email || !password || !firstName || !lastName) {
@@ -156,7 +155,6 @@ app.post('/auth/modifypassword', async (req, res) => {
 
     try {
         await user.update({ password: cryptNewPassword });
-        console.log(user);
         const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
             expiresIn: '24h',
         });
@@ -179,6 +177,37 @@ app.post('/auth/modifypassword', async (req, res) => {
     } catch (error) {
         res.status(500).json({ ok: false, error: 'Erreur interne du serveur.' });
         console.error('Failed to update password:', error);
+    }
+});
+
+app.post('/auth/delete', async (req, res) => {
+    if (!req.headers.authorization) {
+        return res.status(401).json({ ok: false, message: 'Mauvais token JWT.' });
+    }
+    const token = req.headers.authorization.split(' ')[1];
+    try {
+        decoded = jwt.verify(token, process.env.JWT_SECRET);
+    } catch (err) {
+        return res.status(401).json({ ok: false, message: 'Mauvais token JWT.' });
+    }
+    let id = decoded.id;
+    const user = await User.findOne({ where: { id } });
+
+    try {
+        await user.destroy();
+        const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
+            expiresIn: '24h',
+        });
+
+        res.setHeader('Access-Control-Allow-Origin', '*');
+        res.setHeader('Authorization', 'Bearer ' + token);
+        res.status(200).json({
+            ok: true,
+            message: 'Utilisateur supprimé avec succès.'
+        });
+    } catch (error) {
+        res.status(500).json({ ok: false, error: 'Erreur interne du serveur.' });
+        console.error('Failed to delete user:', error);
     }
 });
 

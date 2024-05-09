@@ -140,6 +140,28 @@ function ModifyPassword() {
     );
 }
 
+function DeleteUser() {
+    const handleDelete = async () => {
+        const token = localStorage.getItem('token');
+
+        const response = await api.post('/auth/delete',
+            {},
+            { headers: { 'Authorization': `Bearer ${token}` } }
+        );
+
+        if (response.data.ok) {
+            localStorage.removeItem('token');
+            console.log(response.data.message);
+        } else {
+            console.error(response.data.error);
+        }
+    };
+
+    return (
+        <button onClick={handleDelete}>Delete User</button>
+    );
+}
+
 function App() {
     return (
         <>
@@ -147,6 +169,7 @@ function App() {
             {Login()}
             {Logout()}
             {ModifyPassword()}
+            {DeleteUser()}
         </>
     );
 }
