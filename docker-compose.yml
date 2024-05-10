@@ -20,6 +20,8 @@ services:
     environment:
       - DATABASE_URL=postgres://postgres:password@database:5432/spotiflix
       - JWT_SECRET=${JWT_SECRET}
+    env_file:
+      - .env
   frontend:
     build: ./frontend
     ports:
