@@ -1,56 +1,25 @@
-const express = require('express');
-const app = express();
-const cors = require('cors');
-const PORT = process.env.PORT || 8080;
-const { Sequelize, DataTypes } = require('sequelize');
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
+import express, { Request, Response } from 'express';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import { User, UserInstance } from './models';
 
-app.use(express.json());
-app.use(cors());
+const router = express.Router();
 
-const sequelize = new Sequelize(process.env.DATABASE_URL, {
-    dialect: 'postgres',
-    protocol: 'postgres',
-    logging: false
-});
-
-const User = sequelize.define('User', {
-    createdAt: DataTypes.DATE,
-    email: DataTypes.STRING,
-    firstName: DataTypes.STRING,
-    lastName: DataTypes.STRING,
-    password: DataTypes.STRING,
-    id: {
-        type: DataTypes.UUID,
-        defaultValue: Sequelize.UUIDV4,
-        primaryKey: true
-    }
-});
-
-User.sync({ force: false })
-    .then(() => {
-        console.log('Users table created.');
-    })
-    .catch(error => {
-        console.error('Failed to create Users table:', error);
-    });
-
-app.post('/auth/register', async (req, res) => {
+router.post('/auth/register', async (req: Request, res: Response) => {
     const { email, password, firstName, lastName } = req.body;
 
     if (!email || !password || !firstName || !lastName) {
         return res.status(400).json({ ok: false, error: 'Mauvaise requête, paramètres manquants ou invalides.' });
     }
 
-    const existingUser = await User.findOne({ where: { email } });
+    const existingUser: UserInstance | null = await User.findOne({ where: { email } });
     if (existingUser) {
         return res.status(401).json({ ok: false, error: 'Mauvais identifiants.' });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword: string = await bcrypt.hash(password, 10);
 
-    const user = User.build({
+    const user: UserInstance = User.build({
         createdAt: new Date(),
         email,
         firstName,
@@ -60,7 +29,7 @@ app.post('/auth/register', async (req, res) => {
 
     try {
         await user.save();
-        const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
+        const token: string = jwt.sign({ id: user.id }, process.env.JWT_SECRET!, {
             expiresIn: '24h',
         });
 
@@ -85,23 +54,23 @@ app.post('/auth/register', async (req, res) => {
     }
 });
 
-app.post('/auth/login', async (req, res) => {
+router.post('/auth/login', async (req: Request, res: Response) => {
     const { email, password } = req.body;
 
     if (!email || !password) {
         return res.status(400).json({ ok: false, error: 'Mauvaise requête, paramètres manquants ou invalides.' });
     }
 
-    const existingUser = await User.findOne({ where: { email } });
+    const existingUser: UserInstance | null = await User.findOne({ where: { email } });
     if (existingUser && (await bcrypt.compare(password, existingUser.password))) {
-        firstName = existingUser.firstName;
-        lastName = existingUser.lastName;
+        const firstName: string = existingUser.firstName;
+        const lastName: string = existingUser.lastName;
     } else {
         return res.status(401).json({ ok: false, error: 'Mauvais identifiants.', });
     }
 
     try {
-        const token = jwt.sign({ id: existingUser.id }, process.env.JWT_SECRET, {
+        const token: string = jwt.sign({ id: existingUser!.id }, process.env.JWT_SECRET!, {
             expiresIn: '24h',
         });
 
@@ -114,8 +83,8 @@ app.post('/auth/login', async (req, res) => {
                 token,
                 user: {
                     email,
-                    firstName,
-                    lastName,
+                    firstName: existingUser!.firstName,
+                    lastName: existingUser!.lastName,
                 },
             },
             message: 'Connexion réussie.'
@@ -125,15 +94,16 @@ app.post('/auth/login', async (req, res) => {
     }
 });
 
-app.post('/auth/modifypassword', async (req, res) => {
+router.post('/auth/modifypassword', async (req: Request, res: Response) => {
     if (!req.headers.authorization) {
         return res.status(401).json({ ok: false, message: 'Mauvais token JWT.' });
     }
-    const token = req.headers.authorization.split(' ')[1];
+    const token: string = req.headers.authorization.split(' ')[1];
     const { password, newPassword } = req.body;
 
+    let decoded: any;
     try {
-        decoded = jwt.verify(token, process.env.JWT_SECRET);
+        decoded = jwt.verify(token, process.env.JWT_SECRET!);
     } catch (err) {
         return res.status(401).json({ ok: false, message: 'Mauvais token JWT.' });
     }
@@ -141,21 +111,17 @@ app.post('/auth/modifypassword', async (req, res) => {
     if (!password || !newPassword) {
         return res.status(400).json({ ok: false, error: 'Mauvaise requête, paramètres manquants ou invalides.' });
     }
-    let id = decoded.id;
-    const user = await User.findOne({ where: { id } });
-    if (user && (await bcrypt.compare(password, user.password))) {
-        firstName = user.firstName;
-        lastName = user.lastName;
-        email = user.email;
-    } else {
+    let id: number = decoded.id;
+    const user: UserInstance | null = await User.findOne({ where: { id } });
+    if (!user || !(await bcrypt.compare(password, user.password))) {
         return res.status(401).json({ ok: false, error: 'Mauvais identifiants.', });
     }
 
-    let cryptNewPassword = await bcrypt.hash(newPassword, 10);
+    let cryptNewPassword: string = await bcrypt.hash(newPassword, 10);
 
     try {
         await user.update({ password: cryptNewPassword });
-        const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
+        const token: string = jwt.sign({ id: user.id }, process.env.JWT_SECRET!, {
             expiresIn: '24h',
         });
 
@@ -167,9 +133,9 @@ app.post('/auth/modifypassword', async (req, res) => {
             data: {
                 token,
                 user: {
-                    email,
-                    firstName,
-                    lastName,
+                    email: user.email,
+                    firstName: user.firstName,
+                    lastName: user.lastName,
                 },
             },
             message: 'Mot de passe modifié avec succès.'
@@ -180,22 +146,27 @@ app.post('/auth/modifypassword', async (req, res) => {
     }
 });
 
-app.post('/auth/delete', async (req, res) => {
+router.post('/auth/delete', async (req: Request, res: Response) => {
     if (!req.headers.authorization) {
         return res.status(401).json({ ok: false, message: 'Mauvais token JWT.' });
     }
-    const token = req.headers.authorization.split(' ')[1];
+    const token: string = req.headers.authorization.split(' ')[1];
+    let decoded: any;
     try {
-        decoded = jwt.verify(token, process.env.JWT_SECRET);
+        decoded = jwt.verify(token, process.env.JWT_SECRET!);
     } catch (err) {
         return res.status(401).json({ ok: false, message: 'Mauvais token JWT.' });
     }
-    let id = decoded.id;
-    const user = await User.findOne({ where: { id } });
+    let id: number = decoded.id;
+    const user: UserInstance | null = await User.findOne({ where: { id } });
+
+    if (!user) {
+        return res.status(404).json({ ok: false, error: 'Utilisateur non trouvé.' });
+    }
 
     try {
         await user.destroy();
-        const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
+        const token: string = jwt.sign({ id: user.id }, process.env.JWT_SECRET!, {
             expiresIn: '24h',
         });
 
@@ -211,6 +182,4 @@ app.post('/auth/delete', async (req, res) => {
     }
 });
 
-app.listen(PORT, () => {
-    console.log(`Server listening on ${PORT}`);
-});
+export default router;
