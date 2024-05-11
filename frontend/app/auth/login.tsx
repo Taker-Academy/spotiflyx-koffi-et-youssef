@@ -1,7 +1,8 @@
+"use client";
+
 import { IResponseData, api } from '@/app/page';
 import { AxiosResponse } from "axios";
 import React, { useState, FormEvent, ChangeEvent } from "react";
-
 
 export function Login() {
     const [email, setEmail] = useState<string>('');
@@ -37,3 +38,5 @@ export function Login() {
         </div>
     );
 }
+
+export default Login;
