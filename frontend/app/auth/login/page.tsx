@@ -3,8 +3,11 @@
 import { IResponseData, api } from '@/app/page';
 import { AxiosResponse } from "axios";
 import React, { useState, FormEvent, ChangeEvent } from "react";
+import { useRouter } from "next/navigation";
+import Link from 'next/link';
 
 export function Login() {
+    const router = useRouter();
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
 
@@ -16,6 +19,7 @@ export function Login() {
         if (response.data.ok) {
             localStorage.setItem('token', response.data.data.token);
             console.log(response.data.message);
+            router.push('/home');
         } else {
             console.error(response.data.error);
         }
@@ -35,6 +39,9 @@ export function Login() {
                     <input type='submit' value='Login' />
                 </p>
             </form>
+            <Link href="/auth/register">
+              Register
+            </Link>
         </div>
     );
 }

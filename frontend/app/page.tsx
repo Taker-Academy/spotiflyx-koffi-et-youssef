@@ -1,8 +1,8 @@
 "use client";
 import axios, { AxiosResponse } from "axios";
 import React, { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { redirect } from "next/navigation";
+import Link from "next/link";
 
 export interface IResponseData {
   ok: boolean;
@@ -28,42 +28,23 @@ export const checkToken = async () => {
     if (response.data.ok) return true;
     else return false;
   } catch (error) {
-    console.error(error);
     return false;
   }
 };
 
-type NavigateFunction = (path: string) => void;
+export default async function Page() {
+  const isAuthorized = await checkToken();
 
-export const navigateBasedOnResponse: (
-  navigate: NavigateFunction
-) => Promise<void> = async (navigate) => {
-  if (!(await checkToken())) navigate("/auth/login");
-  else navigate("/home");
-};
-
-const Page: React.FC = () => {
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    navigateBasedOnResponse(navigate);
-  }, []);
-
+  if (isAuthorized) {
+    redirect("/home");
+  } else {
+    redirect("/auth/login");
+  }
   return (
     <div>
       <h1>Page</h1>
+      <p>Welcome to the page!</p>
+      <Link href="/auth/login">Login</Link>
     </div>
   );
-};
-
-function App() {
-  return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Page />} />
-      </Routes>
-    </Router>
-  );
 }
-
-export default App;

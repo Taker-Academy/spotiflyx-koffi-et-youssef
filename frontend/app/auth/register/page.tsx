@@ -3,8 +3,10 @@
 import React, { useState, FormEvent } from 'react';
 import { AxiosResponse } from 'axios';
 import { IResponseData, api } from '@/app/page';
+import { useRouter } from 'next/navigation';
 
-export function Register() {
+export default function Register() {
+    const router = useRouter();
     const [email, setEmail] = useState<string>('');
     const [firstName, setfirstName] = useState<string>('');
     const [lastName, setlastName] = useState<string>('');
@@ -22,6 +24,7 @@ export function Register() {
         if (response.data.ok === true) {
             localStorage.setItem('token', response.data.data.token);
             console.log(response.data.message);
+            router.push('/home');
         } else {
             console.error(response.data.error);
         }
