@@ -94,7 +94,7 @@ router.post('/auth/login', async (req: Request, res: Response) => {
     }
 });
 
-router.post('/auth/modifypassword', async (req: Request, res: Response) => {
+router.put('/auth/modifypassword', async (req: Request, res: Response) => {
     if (!req.headers.authorization) {
         return res.status(401).json({ ok: false, message: 'Mauvais token JWT.' });
     }
@@ -146,7 +146,7 @@ router.post('/auth/modifypassword', async (req: Request, res: Response) => {
     }
 });
 
-router.post('/auth/delete', async (req: Request, res: Response) => {
+router.delete('/auth/delete', async (req: Request, res: Response) => {
     if (!req.headers.authorization) {
         return res.status(401).json({ ok: false, message: 'Mauvais token JWT.' });
     }
