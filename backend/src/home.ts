@@ -6,6 +6,7 @@ import { User, UserInstance } from './models';
 const router = express.Router();
 
 router.get('/home', async (req: Request, res: Response) => {
+    console.log('GET /home');
     if (!req.headers.authorization) {
         return res.status(401).json({ ok: false, message: 'Mauvais token JWT.' });
     }
@@ -20,7 +21,14 @@ router.get('/home', async (req: Request, res: Response) => {
     let id: number = decoded.id;
     const user: UserInstance | null = await User.findOne({ where: { id } });
 
-    if (user)
+    if (user){
+        const senttoken: string = jwt.sign({ id: user!.id }, process.env.JWT_SECRET!, {
+            expiresIn: '24h',
+        });
+
+        res.setHeader('Access-Control-Allow-Origin', '*');
+        res.setHeader('Authorization', 'Bearer ' + senttoken);
+
         return res.status(200).json({
             ok: true,
             data: {
@@ -29,10 +37,8 @@ router.get('/home', async (req: Request, res: Response) => {
                 lastName: user.lastName
             }
         });
-    else
+    } else
         return res.status(401).json({ ok: false, message: 'Mauvais token JWT.' });
 });
-
-
 
 export default router;

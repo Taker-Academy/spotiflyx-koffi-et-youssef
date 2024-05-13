@@ -2,7 +2,7 @@ import axios, { AxiosResponse } from "axios";
 import React, { useEffect } from "react";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { checkToken } from "@/components/checkToken";
+import { checkToken } from "@/src/checkToken";
 
 export default async function Page() {
   const isAuthorized = await checkToken();

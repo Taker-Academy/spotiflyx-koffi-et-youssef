@@ -1,12 +1,9 @@
 import { redirect } from "next/navigation";
-import { checkToken } from "@/components/checkToken";
+import { checkToken } from "@/src/checkToken";
 
 export default async function Home() {
   const isAuthorized = await checkToken();
 
-  if (!isAuthorized) {
-    redirect("/auth/login");
-  }
   return (
     <div>
       <h1>Home</h1>
