@@ -2,7 +2,7 @@
 
 import React, { useState, FormEvent } from 'react';
 import { AxiosResponse } from 'axios';
-import { IResponseData, api } from '@/app/page';
+import { IResponseData, api } from '@/components/api';
 import { useRouter } from 'next/navigation';
 
 export default function Register() {

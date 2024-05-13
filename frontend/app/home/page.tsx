@@ -1,5 +1,5 @@
-import { checkToken } from "../page";
 import { redirect } from "next/navigation";
+import { checkToken } from "@/components/checkToken";
 
 export default async function Home() {
   const isAuthorized = await checkToken();

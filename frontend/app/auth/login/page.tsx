@@ -1,6 +1,6 @@
 "use client";
 
-import { IResponseData, api } from '@/app/page';
+import { IResponseData, api } from '@/components/api'
 import { AxiosResponse } from "axios";
 import React, { useState, FormEvent, ChangeEvent } from "react";
 import { useRouter } from "next/navigation";
