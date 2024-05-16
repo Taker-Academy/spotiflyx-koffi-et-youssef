@@ -5,8 +5,7 @@ import { User, UserInstance } from './models';
 
 const router = express.Router();
 
-router.get('/home', async (req: Request, res: Response) => {
-    console.log('GET /home');
+router.get('/', async (req: Request, res: Response) => {
     if (!req.headers.authorization) {
         return res.status(401).json({ ok: false, message: 'Mauvais token JWT.' });
     }
@@ -35,7 +34,8 @@ router.get('/home', async (req: Request, res: Response) => {
                 email: user.email,
                 firstName: user.firstName,
                 lastName: user.lastName
-            }
+            },
+            message: 'Utilisateur authentifié.'
         });
     } else
         return res.status(401).json({ ok: false, message: 'Mauvais token JWT.' });

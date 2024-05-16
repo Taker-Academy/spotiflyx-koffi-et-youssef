@@ -1,17 +1,40 @@
-import axios, { AxiosResponse } from "axios";
-import React, { useEffect } from "react";
+"use client";
+
+import React, { useEffect, useState } from "react";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { checkToken } from "@/src/checkToken";
+import { AxiosResponse } from "axios";
+import { IResponseData, api } from "@/src/api";
 
-export default async function Page() {
-  const isAuthorized = await checkToken();
+export default function Page() {
+  const [isAuthorized, setIsAuthorized] = useState(false);
 
-  if (isAuthorized) {
-    redirect("/home");
-  } else {
-    redirect("/auth/login");
-  }
+  useEffect(() => {
+    async function checkToken() {
+      let token: string = "";
+      if (typeof window !== "undefined") {
+        token = localStorage.getItem("token") ?? "";
+      }
+
+      const response: AxiosResponse<IResponseData> = await api.get("/", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.data.ok) setIsAuthorized(true);
+      else setIsAuthorized(false);
+    }
+
+    checkToken();
+  }, []);
+
+  useEffect(() => {
+    if (isAuthorized) {
+      redirect("/home");
+    }
+  }, [isAuthorized]);
+
   return (
     <div>
       <h1>Page</h1>

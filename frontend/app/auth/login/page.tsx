@@ -13,7 +13,6 @@ export function Login() {
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
-
     const response: AxiosResponse<IResponseData> = await api.post(
       "/auth/login",
       { email, password }
