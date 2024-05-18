@@ -7,9 +7,9 @@ import {
   VideoInstance,
   Music,
   MusicInstance,
-} from "./models";
+} from "../../models";
 import axios from "axios";
-import { validateToken } from "./middlewares";
+import { validateToken } from "../../middlewares";
 
 const router = express.Router();
 dotenv.config();

@@ -26,7 +26,9 @@ export const validateToken = async (
   const user: UserInstance | null = await User.findOne({ where: { id } });
 
   if (!user) {
-    return res.status(404).json({ ok: false, message: "Utilisateur non trouvé." });
+    return res
+      .status(404)
+      .json({ ok: false, message: "Utilisateur non trouvé." });
   }
 
   res.locals.user = user;
