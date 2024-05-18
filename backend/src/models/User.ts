@@ -1,5 +1,7 @@
 import { DataTypes, Model } from "sequelize";
 import { sequelize } from "./models";
+import { Music } from "./Music";
+import { Video } from "./Video";
 
 interface UserInstance extends Model<any, any> {
   createdAt: Date;
@@ -21,6 +23,16 @@ const User = sequelize.define<UserInstance>("User", {
     defaultValue: DataTypes.UUIDV4,
     primaryKey: true,
   },
+});
+
+User.hasMany(Music, {
+  foreignKey: 'userId',
+  as: 'musics',
+});
+
+User.hasMany(Video, {
+  foreignKey: 'userId',
+  as: 'videos',
 });
 
 User.sync({ force: false })

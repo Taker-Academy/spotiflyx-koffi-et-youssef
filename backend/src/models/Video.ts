@@ -9,6 +9,7 @@ interface VideoInstance extends Model<any, any> {
 const Video = sequelize.define<VideoInstance>("Video", {
   title: DataTypes.STRING,
   url: DataTypes.STRING,
+  userId: DataTypes.UUID,
 });
 
 Video.sync({ force: false })

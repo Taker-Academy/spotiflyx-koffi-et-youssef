@@ -9,6 +9,7 @@ interface MusicInstance extends Model<any, any> {
 const Music = sequelize.define<MusicInstance>("Music", {
   title: DataTypes.STRING,
   url: DataTypes.STRING,
+  userId: DataTypes.UUID,
 });
 
 Music.sync({ force: false })
