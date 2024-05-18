@@ -1,7 +1,7 @@
 import express, { Router } from "express";
 import cors from "cors";
-import authRoutes from "./app/auth/auth";
-import homeRoutes from "./app/home/home";
+import authRoutes from "./routes/auth/auth";
+import homeRoutes from "./routes/home/home";
 
 const app = express();
 const router: Router = express.Router();
