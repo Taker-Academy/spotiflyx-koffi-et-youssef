@@ -3,7 +3,7 @@ import { sequelize } from "./models";
 
 interface VideoInstance extends Model<any, any> {
   title: string;
-  url: string;
+  id: number;
 }
 
 const Video = sequelize.define<VideoInstance>("Video", {

@@ -3,7 +3,7 @@ import { sequelize } from "./models";
 
 interface MusicInstance extends Model<any, any> {
   title: string;
-  url: string;
+  id: number;
 }
 
 const Music = sequelize.define<MusicInstance>("Music", {

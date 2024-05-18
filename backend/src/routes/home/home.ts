@@ -4,7 +4,7 @@ import { validateToken } from "../../middlewares/middlewares";
 
 const router = express.Router();
 
-router.get("/", validateToken, async (req: Request, res: Response) => {
+router.get("/home", validateToken, async (req: Request, res: Response) => {
   const user = res.locals.user;
 
   const token: string = jwt.sign({ id: user.id }, process.env.JWT_SECRET!, {
