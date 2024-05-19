@@ -1,8 +1,8 @@
 import express, { Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import { validateToken } from "../../middlewares/middlewares";
-import videosRoutes from "./videos/videos";
-import musicRoutes from "./music/music";
+import videosRoutes from "../videos/videos";
+import musicRoutes from "../music/music";
 
 const router = express.Router();
 

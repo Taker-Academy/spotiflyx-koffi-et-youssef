@@ -3,8 +3,8 @@ import dotenv from "dotenv";
 import {
   Video,
   VideoInstance
-} from "../../../models/models";
-import { validateToken } from "../../../middlewares/middlewares";
+} from "../../models/models";
+import { validateToken } from "../../middlewares/middlewares";
 
 const router = express.Router();
 dotenv.config();
