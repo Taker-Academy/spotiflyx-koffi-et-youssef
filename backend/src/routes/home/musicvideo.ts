@@ -39,6 +39,7 @@ async function getSpotifyToken(): Promise<string> {
 
 router.post("/home/add", validateToken, async (req: Request, res: Response) => {
   const { url } = req.body;
+  const userId = res.locals.user.id;
 
   if (!url) {
     return res
@@ -58,7 +59,7 @@ router.post("/home/add", validateToken, async (req: Request, res: Response) => {
       );
       title = response.data.items[0].snippet.title;
 
-      const video: VideoInstance = await Video.create({ id, title });
+      const video: VideoInstance = await Video.create({ id, title, userId });
       return res.status(200).json({
         ok: true,
         data: video,
@@ -82,7 +83,7 @@ router.post("/home/add", validateToken, async (req: Request, res: Response) => {
       );
       title = response.data.name;
 
-      const music: MusicInstance = await Music.create({ id, title });
+      const music: MusicInstance = await Music.create({ id, title, userId });
       return res.status(200).json({
         ok: true,
         data: music,

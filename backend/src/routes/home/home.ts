@@ -1,8 +1,14 @@
 import express, { Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import { validateToken } from "../../middlewares/middlewares";
+import videosRoutes from "./videos/videos";
+import musicRoutes from "./music/music";
 
 const router = express.Router();
+
+router.use(videosRoutes);
+router.use(musicRoutes);
+
 
 router.get("/home", validateToken, async (req: Request, res: Response) => {
   const user = res.locals.user;
