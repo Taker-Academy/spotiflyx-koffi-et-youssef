@@ -12,11 +12,10 @@ export default function Page() {
   useEffect(() => {
     async function checkToken() {
       let token: string = "";
-      if (typeof window !== "undefined") {
+      if (typeof window !== "undefined")
         token = localStorage.getItem("token") ?? "";
-      }
 
-      const response: AxiosResponse<IResponseData> = await api.get("/", {
+      const response: AxiosResponse<IResponseData> = await api.get("/home", {
         headers: {
           Authorization: `Bearer ${token}`,
         },

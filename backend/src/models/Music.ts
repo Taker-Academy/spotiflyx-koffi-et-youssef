@@ -1,5 +1,5 @@
 import { DataTypes, Model } from "sequelize";
-import { sequelize } from "./models";
+import { sequelize } from "../models";
 import { User } from "./User";
 
 interface MusicInstance extends Model<any, any> {

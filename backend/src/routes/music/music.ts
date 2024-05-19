@@ -1,11 +1,9 @@
 import express, { Request, Response } from "express";
 import dotenv from "dotenv";
 import {
-  Video,
-  VideoInstance,
   Music,
   MusicInstance,
-} from "../../models/models";
+} from "../../models";
 import axios from "axios";
 import { validateToken } from "../../middlewares/middlewares";
 

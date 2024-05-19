@@ -1,9 +1,9 @@
 import axios from "axios";
 
 export interface IResponseData {
-  ok?: boolean;
+  ok: boolean;
   data?: {
-    token?: string;
+    token: string;
   };
   message?: string;
   error?: string;

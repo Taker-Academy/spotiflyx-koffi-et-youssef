@@ -13,6 +13,8 @@ router.use(musicRoutes);
 router.get("/home", validateToken, async (req: Request, res: Response) => {
   const user = res.locals.user;
 
+  console.log("GET /home");
+
   const token: string = jwt.sign({ id: user.id }, process.env.JWT_SECRET!, {
     expiresIn: "24h",
   });
@@ -22,6 +24,9 @@ router.get("/home", validateToken, async (req: Request, res: Response) => {
 
   return res.status(200).json({
     ok: true,
+    data: {
+      token,
+    },
     message: "Utilisateur authentifié.",
   });
 });
