@@ -6,9 +6,9 @@ html,
 body {
   padding: 0;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans,
-    Helvetica Neue, sans-serif;
-    padding: 0 2rem;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  padding: 0 2rem;
 }
 
 a {
@@ -27,7 +27,8 @@ main {
   align-items: flex-start;
 }
 
-input, textarea { 
+input,
+textarea {
   display: block;
   max-width: 300px;
   margin: 0.5rem 0;
@@ -48,4 +49,24 @@ nav a {
   font-weight: bold;
   margin: 0 0.5rem;
   text-decoration: underline;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.popup {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 4px;
+  max-width: 500px;
+  width: 100%;
 }

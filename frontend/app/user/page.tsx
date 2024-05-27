@@ -1,6 +1,6 @@
+import { IResponseData, api } from "@/src/api";
 import { AxiosResponse } from "axios";
 import React, { useState, FormEvent, ChangeEvent } from "react";
-import { IResponseData, api } from "../page";
 
 function Logout() {
   const handleLogout = () => {

@@ -42,6 +42,7 @@ router.post("/home/add", validateToken, async (req: Request, res: Response) => {
   const userId = res.locals.user.id;
 
   if (!url) {
+    console.log("Missing required fields.");
     return res
       .status(400)
       .json({ ok: false, message: "Missing required fields." });
@@ -90,12 +91,14 @@ router.post("/home/add", validateToken, async (req: Request, res: Response) => {
         message: "Music added successfully.",
       });
     } catch (err) {
+      console.log(err);
       return res.status(500).json({
         ok: false,
         message: "An error occurred while adding the music.",
       });
     }
   } else {
+    console.log("Invalid URL. Only YouTube and Spotify links are accepted.");
     return res.status(400).json({
       ok: false,
       message: "Invalid URL. Only YouTube and Spotify links are accepted.",
@@ -124,6 +127,7 @@ router.get(
         message: "Latest musics and videos retrieved successfully.",
       });
     } catch (err) {
+      console.log(err);
       return res.status(500).json({
         ok: false,
         message:
@@ -132,3 +136,5 @@ router.get(
     }
   }
 );
+
+export default router;

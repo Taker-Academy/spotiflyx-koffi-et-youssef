@@ -11,6 +11,7 @@ export const validateToken = async (
   next: express.NextFunction
 ) => {
   if (!req.headers.authorization) {
+    console.log("No authorization header.");
     return res.status(401).json({ ok: false, message: "Mauvais token JWT." });
   }
   const token: string = req.headers.authorization.split(" ")[1];
@@ -19,6 +20,7 @@ export const validateToken = async (
   try {
     decoded = jwt.verify(token, process.env.JWT_SECRET!);
   } catch (err) {
+    console.log(err);
     return res.status(401).json({ ok: false, message: "Mauvais token JWT." });
   }
 
@@ -26,6 +28,7 @@ export const validateToken = async (
   const user: UserInstance | null = await User.findOne({ where: { id } });
 
   if (!user) {
+    console.log("User not found.");
     return res
       .status(404)
       .json({ ok: false, message: "Utilisateur non trouvé." });
